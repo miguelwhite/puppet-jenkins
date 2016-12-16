@@ -8,6 +8,7 @@ fixtures:
       ref: "4.6.0"
     java: "https://github.com/puppetlabs/puppetlabs-java"
     zypprepo: "https://github.com/deadpoint/puppet-zypprepo.git"
-    archive: "https://github.com/voxpupuli/puppet-archive.git"
+    #archive: "https://github.com/voxpupuli/puppet-archive.git"
+    wget: "https://github.com/maestrodev/puppet-wget"
   symlinks:
     "jenkins": "#{source_dir}"

@@ -63,6 +63,7 @@ define jenkins::plugin(
   }
 
   include ::jenkins
+  include wget
 
   if $version {
     $plugins_host = $update_url ? {
@@ -132,6 +133,7 @@ define jenkins::plugin(
     ]:
       ensure => absent,
       #before => Archive[$plugin],
+      before => Wget::Fetch[$plugin],
     }
 
 
@@ -142,6 +144,7 @@ define jenkins::plugin(
       group   => $::jenkins::group,
       mode    => '0644',
       #require => Archive[$plugin],
+      require => Wget::Fetch[$plugin],
       notify  => Service['jenkins'],
     }
 
@@ -155,6 +158,7 @@ define jenkins::plugin(
       owner   => $::jenkins::user,
       group   => $::jenkins::group,
       #require => Archive[$plugin],
+      require => Wget::Fetch[$plugin],
       notify  => Service['jenkins'],
     }
 
@@ -179,11 +183,21 @@ define jenkins::plugin(
     #  notify          => Service['jenkins'],
     #}
 
+    wget::fetch { $plugin:
+      source      => $download_url,
+      destination => "${::jenkins::plugin_dir}/${plugin}",
+      timeout     => 5,
+      verbose     => true,
+      require     => File[$::jenkins::plugin_dir],
+      unless      => "test -f ${::jenkins::plugin_dir}/${plugin}",
+    }
+
     file { "${::jenkins::plugin_dir}/${plugin}" :
       owner   => $::jenkins::user,
       group   => $::jenkins::group,
       mode    => '0644',
       #require => Archive[$plugin],
+      require => Wget::Fetch[$plugin],
       before  => Service['jenkins'],
     }
   }
