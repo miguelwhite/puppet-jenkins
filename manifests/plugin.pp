@@ -131,7 +131,7 @@ define jenkins::plugin(
       "${::jenkins::plugin_dir}/${inverse_plugin}.pinned",
     ]:
       ensure => absent,
-      before => Archive[$plugin],
+      #before => Archive[$plugin],
     }
 
 
@@ -141,7 +141,7 @@ define jenkins::plugin(
       owner   => $::jenkins::user,
       group   => $::jenkins::group,
       mode    => '0644',
-      require => Archive[$plugin],
+      #require => Archive[$plugin],
       notify  => Service['jenkins'],
     }
 
@@ -154,7 +154,7 @@ define jenkins::plugin(
       ensure  => $pinned_ensure,
       owner   => $::jenkins::user,
       group   => $::jenkins::group,
-      require => Archive[$plugin],
+      #require => Archive[$plugin],
       notify  => Service['jenkins'],
     }
 
@@ -166,24 +166,24 @@ define jenkins::plugin(
       $checksum = undef
     }
 
-    archive { $plugin:
-      source          => $download_url,
-      path            => "${::jenkins::plugin_dir}/${plugin}",
-      checksum_verify => $checksum_verify,
-      checksum        => $checksum,
-      checksum_type   => $digest_type,
-      proxy_server    => $::jenkins::proxy::url,
-      cleanup         => false,
-      extract         => false,
-      require         => File[$::jenkins::plugin_dir],
-      notify          => Service['jenkins'],
-    }
+    #archive { $plugin:
+    #  source          => $download_url,
+    #  path            => "${::jenkins::plugin_dir}/${plugin}",
+    #  checksum_verify => $checksum_verify,
+    #  checksum        => $checksum,
+    #  checksum_type   => $digest_type,
+    #  proxy_server    => $::jenkins::proxy::url,
+    #  cleanup         => false,
+    #  extract         => false,
+    #  require         => File[$::jenkins::plugin_dir],
+    #  notify          => Service['jenkins'],
+    #}
 
     file { "${::jenkins::plugin_dir}/${plugin}" :
       owner   => $::jenkins::user,
       group   => $::jenkins::group,
       mode    => '0644',
-      require => Archive[$plugin],
+      #require => Archive[$plugin],
       before  => Service['jenkins'],
     }
   }
